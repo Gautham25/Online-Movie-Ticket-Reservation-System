@@ -1,0 +1,93 @@
+
+create table roles
+(rid number(32) primary key,
+roles varchar(32) check ( roles='admin' or roles='editor' or roles='customer')
+);
+
+
+
+create table users
+(user_id number(32) primary key,
+user_name varchar(32),
+password varchar(32) not null,
+email varchar(32) not null,
+first_name varchar(32) not null,
+last_name varchar(32) not NULL,
+address varchar(32),
+mobile_number number(10) check(mobile_number>7000000000 and mobile_number<9999999999),
+rid number(32) references roles(rid),
+sid varchar(32) default '0',
+login_time timestamp default NULL,
+logout_time timestamp default NULL
+);
+
+
+
+
+
+create table cities
+(city_id number(32) primary key,
+city varchar(32) not null
+);
+
+create table theatres
+(theatre_id number(32) primary key,
+city_id number(32) references cities(city_id),
+theatre_name varchar(32),
+manager varchar(32)
+);
+
+
+create table movies
+(movie_id number(32) primary key,
+movie_name varchar(32) not null,
+movie_director varchar(32),
+movie_decription varchar(32),
+movie_language varchar(32),
+islive varchar(32) check(islive='Running' or islive='Not running')
+);
+
+
+create table screens
+(screen_id number(32) primary key,
+screen_name varchar(32),
+theatre_id number(32) references theatres(theatre_id),
+screen_capactiy int,
+movie_id number(32) references movies(movie_id)
+);
+
+create table show_timing
+(show_time_id number(32) primary key,
+show_time varchar(32)
+);
+
+
+
+create table theatre_show_timings
+(theatre_show_time_id number(32) primary key,
+screen_id number(32) references screens(screen_id),
+show_time_id number(32) references show_timing(show_time_id),
+start_date date not null,
+end_date date
+);
+
+create table ticket_rate
+(
+ticket_rate_id number(32) primary key,
+ticket_type varchar(32) check(ticket_type='gold' or ticket_type='silver' or ticket_type='platinum'),
+price int
+);
+
+create table booking_ticket_for_theatre
+(
+booking_id number(32) primary key,
+user_id number(32) references users(user_id),
+theatre_showtime_id number(32) references theatre_show_timings(theatre_show_time_id),
+date_of_booking date not null,
+ticket_rate_id number(32) references ticket_rate(ticket_rate_id),
+total_amount int,
+seat_number varchar(32) not null,
+no_of_seats number(32) not null
+);
+
+
